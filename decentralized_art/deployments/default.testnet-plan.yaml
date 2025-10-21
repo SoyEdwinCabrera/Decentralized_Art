@@ -1,0 +1,18 @@
+---
+id: 0
+name: Testnet deployment
+network: testnet
+stacks-node: "https://api.testnet.hiro.so"
+bitcoin-node: "http://blockstack:blockstacksystem@bitcoind.testnet.stacks.co:18332"
+plan:
+  batches:
+    - id: 0
+      transactions:
+        - contract-publish:
+            contract-name: art-campaign-manager
+            expected-sender: ST2QVDSRYYK3C043VZNTBMYXZE57EJ7RTXE6FVZGS
+            cost: 49390
+            path: contracts/art-campaign-manager.clar
+            anchor-block-only: true
+            clarity-version: 1
+      epoch: "2.05"

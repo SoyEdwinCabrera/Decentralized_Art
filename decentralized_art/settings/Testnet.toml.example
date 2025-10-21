@@ -1,0 +1,17 @@
+# Example Testnet settings file (DO NOT COMMIT a file with real mnemonic)
+# Copy this to settings/Testnet.toml locally and fill the mnemonic there.
+
+[accounts.deployer]
+mnemonic = "PASTE_YOUR_TEST_MNEMONIC_HERE"
+balance = 100_000_000_000_000
+# secret_key: <optional - derived from mnemonic>
+# stx_address: <optional - derived from mnemonic>
+
+# Additional example wallets (optional)
+[accounts.wallet_1]
+mnemonic = "PASTE_ANOTHER_TEST_MNEMONIC_OR_LEAVE_EMPTY"
+balance = 100_000_000_000_000
+
+# Faucet or other settings can go here if needed
+# [devnet]
+# faucet_mnemonic = "..."
