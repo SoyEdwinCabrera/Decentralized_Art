@@ -1,5 +1,5 @@
 ;; -------------------------------------------------------------
-;; CONTRACT: art-campaign-manager
+;; CONTRACT: artwork-campaign.clar
 ;; Decentralized_Art - Mecenazgo y sorteos justos
 ;; -------------------------------------------------------------
 
@@ -18,7 +18,8 @@
     deadline: uint,
     active: bool,
     donor-count: uint,
-    winner: (optional principal)
+    winner: (optional principal),
+    ipfs-hash: (optional (string-ascii 256))
   }
 )
 
@@ -32,25 +33,26 @@
   {amount: uint})
 
 ;; Crear una nueva campana
-(define-public (create-campaign (goal uint) (deadline uint))
-  (let ((new-id (+ (var-get campaign-counter) u1)))
+(define-public (create-campaign (goal uint) (deadline uint) (ipfs-hash (string-ascii 256)))
+  (let ((current (var-get campaign-counter)))
     (begin
-      (var-set campaign-counter new-id)
-      (map-set campaigns
-        {id: new-id}
-        {
-          artist: tx-sender,
-          goal: goal,
-          raised: u0,
-          deadline: deadline,
-          active: true,
-          donor-count: u0,
-          winner: none
-        })
-      (ok (tuple (id new-id) (msg "Campaign created!") (price goal) (fee deadline)))
-    )
-  )
-)
+      ;; increment counter
+      (var-set campaign-counter (+ current u1))
+      (let ((new-id (+ current u1))
+            (ipfs-opt (if (is-eq ipfs-hash "") none (some ipfs-hash))))
+        (map-set campaigns
+          {id: new-id}
+          {
+            artist: tx-sender,
+            goal: goal,
+            raised: u0,
+            deadline: deadline,
+            active: true,
+            donor-count: u0,
+            ipfs-hash: ipfs-opt,
+            winner: none
+          })
+        (ok (tuple (id new-id) (msg "Campaign created!") (price goal) (fee deadline) (ipfs ipfs-opt)))))))
 
 ;; Donar STX a una campana activa
 (define-public (donate (campaign-id uint) (amount uint))
