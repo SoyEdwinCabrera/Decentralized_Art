@@ -9,7 +9,7 @@ cache_dir = "./.cache"
 # path = "contracts/counter.clar"
 # epoch = "latest"
 
-[contracts.art-campaign-manager]
+[contracts.artwork-campaign]
 path = "contracts/art-campaign-manager.clar"
 
 [contracts.artwork-token]
