@@ -1,5 +1,5 @@
 ;; -----------------------------------------------------
-;; Contrato: demo-artwork-token.clar
+;; Contrato: artwork-token.clar
 ;; Autor: Edwin Cabrera
 ;; Descripcion: Define los NFT unicos de cada obra de arte
 ;; -----------------------------------------------------
