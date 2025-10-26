@@ -1,67 +1,46 @@
-;; -----------------------------------------------------
-;; Contrato: artwork-token.clar
-;; Autor: Edwin Cabrera
-;; Descripcion: Define los NFT unicos de cada obra de arte
-;; -----------------------------------------------------
+;; ---------------------------------------------------------
+;; Demo Artwork Token - NFT contract for Decentralized Art
+;; ---------------------------------------------------------
+;; demo-artwork-token.clar
+;; NFT basico para el ecosistema Demo Decentralized Art
 
-(impl-trait .artwork-trait.art-nft-trait)
+(define-data-var next-id uint u1)
 
-;; -----------------------------------------------------
-;; VARIABLES GLOBALES
-;; -----------------------------------------------------
+(define-map token-owners {token-id: uint} principal)
+(define-map token-uri {token-id: uint} (string-ascii 256))
 
-(define-data-var total-supply uint u0) ;; cantidad total de NFTs emitidos
-(define-map token-owners uint principal) ;; token-id - propietario
-(define-map token-uri uint (string-ascii 256)) ;; token-id - metadatos URI
+;; Retorna el propietario de un token
+(define-read-only (get-owner (token-id uint))
+  (map-get? token-owners {token-id: token-id})
+)
 
-(define-constant CONTRACT-OWNER tx-sender) ;; el despliegue inicial asigna el dueNIo
+;; Retorna la URI asociada al token
+(define-read-only (get-token-uri (token-id uint))
+  (map-get? token-uri {token-id: token-id})
+)
 
-;; -----------------------------------------------------
-;; FUNCIONES PuBLICAS
-;; -----------------------------------------------------
-
-;; ACUNIAR (mint) un nuevo NFT
+;; Crea un nuevo NFT
 (define-public (mint-artwork (recipient principal) (metadata-uri (string-ascii 256)))
-  (begin
-    (asserts! (is-eq tx-sender CONTRACT-OWNER) (err "Solo el dueNIo puede acuniar"))
-    (let (
-          (new-id (+ u1 (var-get total-supply)))
-         )
-      (map-set token-owners {token-id: new-id} recipient)
-      (map-set token-uri {token-id: new-id} metadata-uri)
-      (var-set total-supply new-id)
-      (ok new-id)
-    )
+  (let ((new-id (var-get next-id)))
+    (map-set token-owners {token-id: new-id} recipient)
+    (map-set token-uri {token-id: new-id} metadata-uri)
+    (var-set next-id (+ new-id u1))
+    (ok new-id)
   )
 )
 
-;; TRANSFERIR NFT
+;; Transfiere el token a otro usuario
 (define-public (transfer-artwork (token-id uint) (new-owner principal))
   (let ((owner-opt (map-get? token-owners {token-id: token-id})))
     (match owner-opt owner
       (if (is-eq owner tx-sender)
-        (begin
-          (map-set token-owners {token-id: token-id} new-owner)
-          (ok true)
-        )
-        (err "not-authorized")
+          (begin
+            (map-set token-owners {token-id: token-id} new-owner)
+            (ok true)
+          )
+          (err u403)
       )
-      (err "token-not-found")
+      (err u404)
     )
   )
-)
-
-;; CONSULTAR PROPIETARIO
-(define-read-only (get-artwork-owner (token-id uint))
-  (map-get? token-owners {token-id: token-id})
-)
-
-;; CONSULTAR METADATOS (URI)
-(define-read-only (get-artwork-uri (token-id uint))
-  (map-get? token-uri {token-id: token-id})
-)
-
-;; TOTAL DE NFTs CREADOS
-(define-read-only (get-total-supply)
-  (var-get total-supply)
 )
