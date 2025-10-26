@@ -17,7 +17,7 @@ path = "contracts/artwork-token.clar"
 
 [contracts.marketplace]
 path = "contracts/marketplace.clar"
-depends_on = ["artwork-token"]
+depends_on = ["artwork-token", "platform-wallet"]
 
 [contracts.platform-wallet]
 path = "contracts/platform-wallet.clar"
