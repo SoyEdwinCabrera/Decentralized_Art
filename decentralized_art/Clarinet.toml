@@ -12,6 +12,16 @@ cache_dir = "./.cache"
 [contracts.art-campaign-manager]
 path = "contracts/art-campaign-manager.clar"
 
+[contracts.artwork-token]
+path = "contracts/artwork-token.clar"
+
+[contracts.marketplace]
+path = "contracts/marketplace.clar"
+depends_on = ["artwork-token"]
+
+[contracts.platform-wallet]
+path = "contracts/platform-wallet.clar"
+
 [repl.analysis]
 passes = ["check_checker"]
 check_checker = { trusted_sender = false, trusted_caller = false, callee_filter = false }
